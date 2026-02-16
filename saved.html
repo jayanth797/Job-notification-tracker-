@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Notification Tracker</title>
+    <title>Saved Jobs - Job Notification Tracker</title>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,21 +28,29 @@
 
         <ul class="nav-links">
             <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
-            <li><a href="saved.html" class="nav-link">Saved</a></li>
+            <li><a href="saved.html" class="nav-link active">Saved</a></li>
             <li><a href="digest.html" class="nav-link">Digest</a></li>
             <li><a href="settings.html" class="nav-link">Settings</a></li>
             <li><a href="proof.html" class="nav-link">Proof</a></li>
         </ul>
     </nav>
 
-    <!-- Context Header / Hero Section -->
-    <header class="context-header" style="text-align: center; padding-top: 120px; padding-bottom: 120px;">
-        <h1 class="context-headline" style="font-size: 4rem; margin-bottom: 24px;">Stop Missing The Right Jobs.</h1>
-        <p class="context-subtext" style="margin: 0 auto 40px auto; font-size: 1.25rem;">Precision-matched job discovery
-            delivered daily at 9AM.</p>
-        <a href="settings.html" class="btn btn-primary" style="padding: 16px 32px; font-size: 1.125rem;">Start
-            Tracking</a>
+    <!-- Context Header -->
+    <header class="context-header">
+        <h1 class="context-headline">Saved Jobs</h1>
     </header>
+
+    <!-- Main Layout -->
+    <main class="main-layout">
+        <section class="primary-workspace"
+            style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; text-align: center;">
+            <div style="padding: 48px; max-width: 600px; width: 100%;">
+                <h2 style="font-family: var(--font-serif); font-size: 1.5rem; margin-bottom: 16px; color: #888;">Your
+                    Shortlist is Empty</h2>
+                <p style="color: #666;">Bookmark high-potential opportunities here for deeper review.</p>
+            </div>
+        </section>
+    </main>
 
     <script src="script.js"></script>
 </body>
