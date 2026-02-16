@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KodNest Premium Build System</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- Top Bar -->
+    <nav class="top-bar">
+        <div class="brand-name">KodNest Premium Build System</div>
+        <div class="progress-indicator">Step 1 / 5</div>
+        <div class="status-badge in-progress">In Progress</div>
+    </nav>
+
+    <!-- Context Header -->
+    <header class="context-header">
+        <h1 class="context-headline">Project Initialization</h1>
+        <p class="context-subtext">Setting the foundation for a scalable, premium application structure.</p>
+    </header>
+
+    <!-- Main Layout -->
+    <main class="main-layout">
+
+        <!-- Primary Workspace (70%) -->
+        <section class="primary-workspace">
+            <div class="card">
+                <h2 class="card-title">Configuration</h2>
+                <div class="input-group">
+                    <label class="label" for="project-name">Project Name</label>
+                    <input type="text" id="project-name" placeholder="e.g. Acme SaaS Platform"
+                        value="KodNest Premium Build System">
+                </div>
+
+                <div class="input-group">
+                    <label class="label" for="description">Description</label>
+                    <textarea id="description" rows="4"
+                        placeholder="Briefly describe the project goals...">A premium design system for serious B2C product companies.</textarea>
+                </div>
+
+                <div style="margin-top: 24px;">
+                    <button class="btn btn-primary">Save Configuration</button>
+                    <button class="btn btn-secondary" style="margin-left: 12px;">Reset Defaults</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Environment Status</h2>
+                <p>All systems running normally. No critical errors detected in the build pipeline.</p>
+            </div>
+        </section>
+
+        <!-- Secondary Panel (30%) -->
+        <aside class="secondary-panel">
+            <div class="card">
+                <h3 class="card-title">Current Step</h3>
+                <p style="font-size: 0.9rem; margin-bottom: 16px;">
+                    Configure the initial project settings. Ensure the naming follows the company guidelines.
+                </p>
+
+                <div class="prompt-box">
+                    > Initialize repository<br>
+                    > Install dependencies<br>
+                    > Setup strict linting
+                </div>
+
+                <div class="panel-actions">
+                    <button class="btn btn-secondary">Copy</button>
+                    <button class="btn btn-secondary">Build in Lovable</button>
+                    <button class="btn btn-primary">It Worked</button>
+                    <button class="btn btn-secondary"
+                        style="color: var(--color-accent); border-color: var(--color-accent);">Error</button>
+                    <button class="btn btn-secondary">Add Screenshot</button>
+                </div>
+            </div>
+        </aside>
+
+    </main>
+
+    <!-- Proof Footer -->
+    <footer class="proof-footer">
+        <div class="checklist">
+            <label class="check-item"><input type="checkbox"> UI Built</label>
+            <label class="check-item"><input type="checkbox"> Logic Working</label>
+            <label class="check-item"><input type="checkbox"> Test Passed</label>
+            <label class="check-item"><input type="checkbox"> Deployed</label>
+        </div>
+    </footer>
+
+</body>
+
+</html>
