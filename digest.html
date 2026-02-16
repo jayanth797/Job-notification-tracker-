@@ -38,22 +38,64 @@
     <!-- Context Header -->
     <header class="context-header">
         <h1 class="context-headline">Daily Digest</h1>
+        <p class="context-subtext">Your curated morning briefing. Delivered daily at 9:00 AM.</p>
     </header>
 
     <!-- Main Layout -->
     <main class="main-layout">
-        <section class="primary-workspace"
-            style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; text-align: center;">
-            <div style="padding: 48px; max-width: 600px; width: 100%;">
-                <h2 style="font-family: var(--font-serif); font-size: 1.5rem; margin-bottom: 16px; color: #888;">Coming
-                    Soon</h2>
-                <p style="color: #666;">Your curated list of precision-matched jobs will appear here daily at 9:00 AM.
-                </p>
+        <section class="primary-workspace">
+
+            <!-- Controls -->
+            <div style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <span id="next-delivery">Next delivery: <strong>Tomorrow, 9:00 AM</strong></span>
+                </div>
+                <button id="simulate-digest-btn" class="btn btn-primary">Simulate 9AM Delivery</button>
             </div>
+
+            <!-- Email Simulation Container -->
+            <div id="email-preview-container" class="card" style="display: none; background: #f2f2f2; padding: 40px;">
+                <!-- Simulated Email Client Window -->
+                <div
+                    style="max-width: 600px; margin: 0 auto; background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden;">
+
+                    <!-- Email Header -->
+                    <div style="background: var(--color-accent); color: white; padding: 24px; text-align: center;">
+                        <h2 style="margin: 0; font-size: 1.5rem; color: white;">Your Top Job Picks</h2>
+                        <p style="margin: 8px 0 0; opacity: 0.9; font-size: 0.9rem;">Fresh matches for <span
+                                id="digest-date">Today</span></p>
+                    </div>
+
+                    <!-- Email Body -->
+                    <div id="digest-content" style="padding: 24px;">
+                        <!-- Dynamic Job Rows go here -->
+                        <p style="text-align: center; color: #666;">Loading your matches...</p>
+                    </div>
+
+                    <!-- Email Footer -->
+                    <div
+                        style="background: #f9f9f9; padding: 16px; text-align: center; font-size: 0.8rem; color: #888; border-top: 1px solid #eee;">
+                        <p style="margin: 0;">You received this email because you subscribed to Job Notification
+                            Tracker.</p>
+                        <a href="#" style="color: #666; text-decoration: underline;">Update Preferences</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State (Default) -->
+            <div id="digest-empty-state" class="empty-state">
+                <div style="font-size: 3rem; margin-bottom: 16px;">📧</div>
+                <h3>No digest generated yet.</h3>
+                <p>Click "Simulate 9AM Delivery" to preview your next scheduled email.</p>
+            </div>
+
         </section>
     </main>
 
+    <!-- Scripts -->
     <script src="script.js"></script>
+    <script src="jobs-data.js"></script>
+    <script src="app.js"></script>
 </body>
 
 </html>

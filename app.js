@@ -207,7 +207,8 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (sortValue === 'match_score') {
             filtered.sort((a, b) => calculateMatchScore(b) - calculateMatchScore(a));
         } else if (sortValue === 'salary') {
-            filtered.sort((a, b) => b.salaryRange.length - a.salaryRange.length);
+            const getSalary = (s) => parseInt(s.match(/\d+/)?.[0] || 0);
+            filtered.sort((a, b) => getSalary(b.salaryRange) - getSalary(a.salaryRange));
         }
 
         return filtered;
@@ -285,6 +286,60 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 renderJobs(savedJobs);
             }
+        }
+        // DIGEST PAGE LOGIC
+        const isDigestPage = window.location.pathname.includes('digest.html');
+        if (isDigestPage) {
+            const simulateBtn = document.getElementById('simulate-digest-btn');
+            const digestContainer = document.getElementById('email-preview-container');
+            const emptyState = document.getElementById('digest-empty-state');
+            const digestContent = document.getElementById('digest-content');
+            const digestDate = document.getElementById('digest-date');
+
+            if (digestDate) {
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                digestDate.innerText = new Date().toLocaleDateString('en-US', options);
+            }
+
+            simulateBtn.addEventListener('click', () => {
+                // Check if prefs exist
+                if (!preferences.roleKeywords) {
+                    alert("Please set your preferences in Settings first to generate a personalized digest.");
+                    window.location.href = 'settings.html';
+                    return;
+                }
+
+                // Generate Digest
+                const scoredJobs = JOBS_DATA.map(job => ({ ...job, score: calculateMatchScore(job) }));
+                scoredJobs.sort((a, b) => b.score - a.score);
+                const topPicks = scoredJobs.slice(0, 5); // Top 5
+
+                // Render Email Content
+                if (topPicks.length > 0 && topPicks[0].score > 0) {
+                    digestContent.innerHTML = topPicks.map(job => `
+                        <div class="email-row">
+                            <div style="flex: 1;">
+                                <h4 style="margin: 0 0 4px; color: #333; font-family: var(--font-serif);">${job.title}</h4>
+                                <p style="margin: 0; font-size: 0.9rem; color: #666;">${job.company} • ${job.location}</p>
+                                <div style="margin-top: 8px;">
+                                    <span style="font-size: 0.8rem; background: #e6ffe6; color: #006600; padding: 2px 6px; border-radius: 4px; font-weight: 600;">${job.score}% Match</span>
+                                    <span style="font-size: 0.8rem; color: #888; margin-left: 8px;">${job.salaryRange}</span>
+                                </div>
+                            </div>
+                            <button onclick="window.open('${job.applyUrl}', '_blank')" class="btn btn-primary btn-sm" style="padding: 6px 12px; font-size: 0.8rem; white-space: nowrap;">Apply</button>
+                        </div>
+                     `).join('');
+                } else {
+                    digestContent.innerHTML = `<p style="text-align: center; padding: 20px;">No strong matches found for today. Try adjusting your preferences.</p>`;
+                }
+
+                // Show Container
+                emptyState.style.display = 'none';
+                digestContainer.style.display = 'block';
+
+                // Scroll to view
+                digestContainer.scrollIntoView({ behavior: 'smooth' });
+            });
         }
         // DASHBOARD LOGIC
         else if (jobContainer) {

@@ -591,3 +591,21 @@ input:checked+.slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
+
+/* --- EMAIL SIMULATION STYLES --- */
+.email-row {
+  padding: 16px 0;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 16px;
+}
+
+.email-row:last-child {
+  border-bottom: none;
+}
+
+.email-row:hover {
+  background-color: #fcfcfc;
+}
