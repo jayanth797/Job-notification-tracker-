@@ -42,17 +42,27 @@
 
     <!-- Main Layout -->
     <main class="main-layout">
-        <section class="primary-workspace"
-            style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; text-align: center;">
-            <div style="padding: 48px; max-width: 600px; width: 100%;">
-                <h2 style="font-family: var(--font-serif); font-size: 1.5rem; margin-bottom: 16px; color: #888;">Your
-                    Shortlist is Empty</h2>
-                <p style="color: #666;">Bookmark high-potential opportunities here for deeper review.</p>
+        <section class="primary-workspace">
+            <div id="job-container" class="job-grid">
+                <!-- Javascript will populate this with Saved Jobs -->
             </div>
         </section>
     </main>
 
+    <!-- Modal -->
+    <div id="job-modal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-body">
+                <!-- Dynamic Content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
     <script src="script.js"></script>
+    <script src="jobs-data.js"></script>
+    <script src="app.js"></script>
 </body>
 
 </html>
