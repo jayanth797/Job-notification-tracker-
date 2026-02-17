@@ -32,6 +32,8 @@
             <li><a href="digest.html" class="nav-link active">Digest</a></li>
             <li><a href="settings.html" class="nav-link">Settings</a></li>
             <li><a href="proof.html" class="nav-link">Proof</a></li>
+            <li><a href="test.html" class="nav-link">Test</a></li>
+            <li><a href="ship.html" class="nav-link" style="color: #666;">Ship</a></li>
         </ul>
     </nav>
 
@@ -49,13 +51,26 @@
             <div style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <span id="next-delivery">Next delivery: <strong>Tomorrow, 9:00 AM</strong></span>
-                    <div style="font-size: 0.75rem; color: #888; margin-top: 4px;">Demo Mode: Daily 9AM trigger simulated manually.</div>
+                    <div style="font-size: 0.75rem; color: #888; margin-top: 4px;">Demo Mode: Daily 9AM trigger
+                        simulated manually.</div>
                 </div>
-                <button id="simulate-digest-btn" class="btn btn-primary">Generate Today's 9AM Digest (Simulated)</button>
+                <button id="simulate-digest-btn" class="btn btn-primary">Generate Today's 9AM Digest
+                    (Simulated)</button>
             </div>
 
             <!-- Email Simulation Container -->
             <div id="email-preview-container" class="card" style="display: none; background: #f2f2f2; padding: 40px;">
+                <!-- Recent Status Updates Section -->
+                <div id="status-updates-container"
+                    style="max-width: 600px; margin: 0 auto 24px; background: white; border-radius: 8px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: none;">
+                    <h3
+                        style="margin: 0 0 16px; font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 8px;">
+                        Recent Status Updates</h3>
+                    <div id="status-updates-list">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
                 <!-- Simulated Email Client Window -->
                 <div
                     style="max-width: 600px; margin: 0 auto; background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden;">
@@ -80,7 +95,7 @@
                         <a href="settings.html" style="color: #666; text-decoration: underline;">Update Preferences</a>
                     </div>
                 </div>
-                
+
                 <!-- Action Buttons -->
                 <div style="margin-top: 24px; display: flex; gap: 12px; justify-content: center;">
                     <button id="copy-digest-btn" class="btn btn-secondary">Copy Digest to Clipboard</button>

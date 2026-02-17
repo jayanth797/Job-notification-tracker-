@@ -2,12 +2,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // State
     let savedJobIds = JSON.parse(localStorage.getItem('savedJobs')) || [];
     let preferences = JSON.parse(localStorage.getItem('jobTrackerPreferences')) || {};
+    let jobStatus = JSON.parse(localStorage.getItem('jobTrackerStatus')) || {}; // { jobId: 'Applied' }
+    let statusUpdates = JSON.parse(localStorage.getItem('jobTrackerStatusUpdates')) || []; // [{id, title, company, status, date}]
     let showMatchesOnly = false;
 
     // DOM Elements - Global
     const modal = document.getElementById('job-modal');
     const closeModal = document.querySelector('.close-modal');
     const modalContent = document.querySelector('.modal-body');
+    let toast = document.getElementById('status-toast'); // Search for it
+
+    // Create Toast if missing
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'status-toast';
+        document.body.appendChild(toast);
+    }
 
     // DOM Elements - Dashboard
     const jobContainer = document.getElementById('job-container');
@@ -17,7 +27,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const experienceSelect = document.getElementById('experience-filter');
     const sourceSelect = document.getElementById('source-filter');
     const sortSelect = document.getElementById('sort-filter');
-    const matchToggle = document.getElementById('match-toggle-checkbox'); // New Toggle
+    const statusSelect = document.getElementById('status-filter'); // New
+    const matchToggle = document.getElementById('match-toggle-checkbox');
 
     // DOM Elements - Settings
     const settingsForm = document.getElementById('preferences-form');
@@ -27,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const expInput = document.getElementById('experience');
     const scoreSlider = document.getElementById('min-score');
     const scoreDisplay = document.getElementById('score-display');
-    const toast = document.getElementById('toast');
+    const settingsToast = document.getElementById('toast');
 
 
     // --- MATCH SCORE ENGINE ---
@@ -105,11 +116,18 @@ document.addEventListener('DOMContentLoaded', () => {
         return `${days} days ago`;
     };
 
+    const showStatusToast = (message) => {
+        toast.innerText = message;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    };
+
     const createJobCard = (job) => {
         const isSaved = savedJobIds.includes(job.id);
         const score = calculateMatchScore(job);
         const badgeColor = getMatchBadgeColor(score);
         const showBadge = score > 0;
+        const currentStatus = jobStatus[job.id] || 'Not Applied';
 
         const card = document.createElement('div');
         card.className = 'job-card';
@@ -135,6 +153,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="detail-item">
                     <span class="icon">💰</span> ${job.salaryRange}
                 </div>
+            </div>
+
+            <div style="margin-bottom: 16px;">
+                 <div style="font-size: 0.75rem; font-weight: 600; color: #666; margin-bottom: 4px;">APPLICATION STATUS</div>
+                 <div class="status-controls">
+                    <button class="status-btn ${currentStatus === 'Applied' ? 'active' : ''}" data-status="Applied" onclick="app.setStatus(${job.id}, 'Applied')">Applied</button>
+                    <button class="status-btn ${currentStatus === 'Rejected' ? 'active' : ''}" data-status="Rejected" onclick="app.setStatus(${job.id}, 'Rejected')">Rejected</button>
+                    <button class="status-btn ${currentStatus === 'Selected' ? 'active' : ''}" data-status="Selected" onclick="app.setStatus(${job.id}, 'Selected')">Selected</button>
+                    ${currentStatus !== 'Not Applied' ? `<button class="status-btn" onclick="app.setStatus(${job.id}, 'Not Applied')" style="margin-left: auto; color: #999;">Reset</button>` : ''}
+                 </div>
             </div>
 
             <div class="job-meta">
@@ -171,6 +199,29 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
+    const renderStatusUpdates = (container) => {
+        if (!container) return;
+        // Get last 5 updates
+        const recent = statusUpdates.slice().reverse().slice(0, 5);
+        if (recent.length === 0) return;
+
+        container.parentElement.style.display = 'block'; // Show Card
+        container.style.display = 'block';
+
+        container.querySelector('#status-updates-list').innerHTML = recent.map(update => `
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f9f9f9;">
+                <div>
+                    <div style="font-weight: 600; font-size: 0.9rem;">${update.title}</div>
+                    <div style="font-size: 0.8rem; color: #666;">${update.company}</div>
+                </div>
+                <div style="text-align: right;">
+                     <span class="status-badge ${update.status.toLowerCase()}">${update.status}</span>
+                     <div style="font-size: 0.7rem; color: #999; margin-top: 2px;">${new Date(update.timestamp).toLocaleDateString()}</div>
+                </div>
+            </div>
+        `).join('');
+    };
+
     // --- LOGIC ---
 
     const filterAndSortJobs = () => {
@@ -180,7 +231,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const locationValue = locationSelect.value;
         const modeValue = modeSelect.value;
         const experienceValue = experienceSelect.value;
-        const sourceValue = sourceSelect.value; // Corrected ID reference
+        const sourceValue = sourceSelect.value;
+        const statusValue = statusSelect.value; // New
         const sortValue = sortSelect.value;
 
         const minScore = parseInt(preferences.minScore || 0);
@@ -194,11 +246,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const matchesExperience = experienceValue === '' || job.experience === experienceValue;
             const matchesSource = sourceValue === '' || job.source === sourceValue;
 
+            // Status Filter
+            const currentStatus = jobStatus[job.id] || 'Not Applied';
+            const matchesStatus = statusValue === '' || currentStatus === statusValue;
+
             // Match Filter
             const score = calculateMatchScore(job);
             const matchesScore = !showMatchesOnly || (score >= minScore);
 
-            return matchesSearch && matchesLocation && matchesMode && matchesExperience && matchesSource && matchesScore;
+            return matchesSearch && matchesLocation && matchesMode && matchesExperience && matchesSource && matchesStatus && matchesScore;
         });
 
         // Sort
@@ -266,8 +322,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 localStorage.setItem('jobTrackerPreferences', JSON.stringify(preferences));
 
-                toast.style.display = 'block';
-                setTimeout(() => toast.style.display = 'none', 3000);
+                settingsToast.style.display = 'block';
+                setTimeout(() => settingsToast.style.display = 'none', 3000);
             });
         }
 
@@ -297,6 +353,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const digestDate = document.getElementById('digest-date');
             const copyBtn = document.getElementById('copy-digest-btn');
             const emailBtn = document.getElementById('email-draft-btn');
+            const statusUpdatesContainer = document.getElementById('status-updates-container'); // New
 
             const today = new Date();
             const todayStr = today.toISOString().split('T')[0];
@@ -308,8 +365,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const renderDigestContent = (jobs) => {
-                 if (jobs.length > 0 && jobs[0].score > 0) {
-                     digestContent.innerHTML = jobs.map(job => `
+                if (jobs.length > 0 && jobs[0].score > 0) {
+                    digestContent.innerHTML = jobs.map(job => `
                         <div class="email-row">
                             <div style="flex: 1;">
                                 <h4 style="margin: 0 0 4px; color: #333; font-family: var(--font-serif);">${job.title}</h4>
@@ -329,6 +386,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const showDigest = (jobs) => {
                 renderDigestContent(jobs);
+                renderStatusUpdates(statusUpdatesContainer); // New
                 emptyState.style.display = 'none';
                 digestContainer.style.display = 'block';
                 digestContainer.scrollIntoView({ behavior: 'smooth' });
@@ -337,15 +395,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const generateDigest = () => {
                 // Check prefs
                 if (!preferences.roleKeywords) {
-                     const banner = document.createElement('div');
-                     banner.style.cssText = "background: #fff3cd; color: #856404; padding: 12px; border-radius: 4px; text-align: center; margin-bottom: 24px;";
-                     banner.innerText = "Set preferences to generate a personalized digest.";
-                     // Replace existing banner if any
-                     const existing = document.querySelector('.digest-banner-warning');
-                     if(existing) existing.remove();
-                     banner.classList.add('digest-banner-warning');
-                     emptyState.parentElement.insertBefore(banner, emptyState);
-                     return null;
+                    const banner = document.createElement('div');
+                    banner.style.cssText = "background: #fff3cd; color: #856404; padding: 12px; border-radius: 4px; text-align: center; margin-bottom: 24px;";
+                    banner.innerText = "Set preferences to generate a personalized digest.";
+                    // Replace existing banner if any
+                    const existing = document.querySelector('.digest-banner-warning');
+                    if (existing) existing.remove();
+                    banner.classList.add('digest-banner-warning');
+                    emptyState.parentElement.insertBefore(banner, emptyState);
+                    return null;
                 }
 
                 // Calc Scores & Sort
@@ -356,7 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 const topPicks = scoredJobs.slice(0, 10); // Top 10
-                
+
                 // Persist
                 localStorage.setItem(persistenceKey, JSON.stringify(topPicks));
                 return topPicks;
@@ -382,20 +440,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 const existing = localStorage.getItem(persistenceKey);
                 if (!existing) return;
                 const jobs = JSON.parse(existing);
-                
-                const text = jobs.map((j, i) => `${i+1}. ${j.title} at ${j.company} (${j.score}% Match)\n   ${j.applyUrl}`).join('\n\n');
+
+                const text = jobs.map((j, i) => `${i + 1}. ${j.title} at ${j.company} (${j.score}% Match)\n   ${j.applyUrl}`).join('\n\n');
                 navigator.clipboard.writeText(`My 9AM Job Digest - ${today.toLocaleDateString()}\n\n${text}`);
                 copyBtn.innerText = "Copied!";
                 setTimeout(() => copyBtn.innerText = "Copy Digest to Clipboard", 2000);
             });
 
             emailBtn.addEventListener('click', () => {
-                 const existing = localStorage.getItem(persistenceKey);
-                 if (!existing) return;
-                 const jobs = JSON.parse(existing);
+                const existing = localStorage.getItem(persistenceKey);
+                if (!existing) return;
+                const jobs = JSON.parse(existing);
 
-                 const body = jobs.map((j, i) => `${i+1}. ${j.title} at ${j.company} (${j.score}% Match)%0D%0A   ${j.applyUrl}`).join('%0D%0A%0D%0A');
-                 window.location.href = `mailto:?subject=My 9AM Job Digest&body=Here are my top top matches for today:%0D%0A%0D%0A${body}`;
+                const body = jobs.map((j, i) => `${i + 1}. ${j.title} at ${j.company} (${j.score}% Match)%0D%0A   ${j.applyUrl}`).join('%0D%0A%0D%0A');
+                window.location.href = `mailto:?subject=My 9AM Job Digest&body=Here are my top top matches for today:%0D%0A%0D%0A${body}`;
             });
         }
         // DASHBOARD LOGIC
@@ -427,8 +485,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Listeners
             if (searchInput) {
-                const inputs = [searchInput, locationSelect, modeSelect, experienceSelect, sourceSelect, sortSelect];
-                inputs.forEach(el => el.addEventListener('input', () => renderJobs(filterAndSortJobs())));
+                const inputs = [searchInput, locationSelect, modeSelect, experienceSelect, sourceSelect, sortSelect, statusSelect];
+                inputs.forEach(el => {
+                    if (el) el.addEventListener('input', () => renderJobs(filterAndSortJobs()));
+                });
 
                 // Toggle Switch Logic
                 if (matchToggle) {
@@ -451,6 +511,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 savedJobIds.splice(index, 1);
             }
             localStorage.setItem('savedJobs', JSON.stringify(savedJobIds));
+            init(); // Re-render to update saved buttons logic (though less impactful for just styling)
+        },
+        setStatus: (id, status) => {
+            jobStatus[id] = status;
+            localStorage.setItem('jobTrackerStatus', JSON.stringify(jobStatus));
+
+            // Add to updates
+            const job = JOBS_DATA.find(j => j.id === id);
+            if (job) {
+                statusUpdates.push({
+                    id: job.id,
+                    title: job.title,
+                    company: job.company,
+                    status: status,
+                    timestamp: new Date().toISOString()
+                });
+                localStorage.setItem('jobTrackerStatusUpdates', JSON.stringify(statusUpdates));
+            }
+
+            showStatusToast(`Status updated to: ${status}`);
+
+            // Re-render
             init();
         },
         viewJob: (id) => {

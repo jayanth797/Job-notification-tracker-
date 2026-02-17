@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pre-Ship Checklist - Job Notification Tracker</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap"
+        rel="stylesheet">
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .checklist-container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .checklist-header {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+
+        .checklist-item:hover {
+            background: #f9f9f9;
+        }
+
+        .checklist-item input[type="checkbox"] {
+            margin-top: 4px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .checklist-label {
+            flex: 1;
+            font-size: 0.95rem;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .checklist-tooltip {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 4px;
+            display: block;
+        }
+
+        .status-summary {
+            background: #f0f0f0;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-summary.success {
+            background: #e6ffe6;
+            color: #006600;
+        }
+
+        .status-summary.warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .nav-links {
+            margin-top: 24px;
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">JOB NOTIFICATION TRACKER</div>
+        <div class="nav-links">
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="saved.html" class="nav-link">Saved</a>
+            <a href="digest.html" class="nav-link">Digest</a>
+            <a href="settings.html" class="nav-link">Settings</a>
+            <a href="proof.html" class="nav-link">Proof</a>
+            <a href="test.html" class="nav-link active">Test</a>
+            <a href="ship.html" class="nav-link" id="ship-link">Ship</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="checklist-container">
+            <div class="checklist-header">
+                <h1 style="margin: 0; font-family: var(--font-serif);">Pre-Ship Checklist</h1>
+                <p style="margin: 8px 0 0; color: #666;">Ensure all tests pass before shipping to production.</p>
+            </div>
+
+            <div id="test-summary" class="status-summary warning">
+                <span>Tests Passed: <span id="passed-count">0</span> / 10</span>
+                <span id="summary-msg" style="font-size: 0.85rem;">Resolve all issues before shipping.</span>
+            </div>
+
+            <div id="checklist-items">
+                <!-- Populated by JS -->
+            </div>
+
+            <div style="margin-top: 32px; text-align: center;">
+                <button id="reset-tests-btn" class="btn btn-secondary btn-sm">Reset Test Status</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const checklistItems = [
+                { id: 'prefs_persist', label: 'Preferences persist after refresh', tip: 'Change settings, reload page, verify values remain.' },
+                { id: 'match_score', label: 'Match score calculates correctly', tip: 'Verify job match scores align with set preferences.' },
+                { id: 'matches_toggle', label: '"Show only matches" toggle works', tip: 'Enable toggle, verify non-matches are hidden.' },
+                { id: 'save_persist', label: 'Save job persists after refresh', tip: 'Save a job, reload, verify "Saved" status.' },
+                { id: 'apply_newtab', label: 'Apply opens in new tab', tip: 'Click Apply, ensure it opens a new browser tab.' },
+                { id: 'status_persist', label: 'Status update persists after refresh', tip: 'Change status to Applied/Rejected, reload, verify.' },
+                { id: 'status_filter', label: 'Status filter works correctly', tip: 'Filter by "Applied", verify only applied jobs show.' },
+                { id: 'digest_score', label: 'Digest generates top 10 by score', tip: 'Check digest logic sorts by score descending.' },
+                { id: 'digest_persist', label: 'Digest persists for the day', tip: 'Generate digest, reload page, verify same list loads.' },
+                { id: 'no_console_errors', label: 'No console errors on main pages', tip: 'Open DevTools, navigate pages, check Console.' }
+            ];
+
+            const container = document.getElementById('checklist-items');
+            const summaryEl = document.getElementById('test-summary');
+            const countEl = document.getElementById('passed-count');
+            const msgEl = document.getElementById('summary-msg');
+            const shipLink = document.getElementById('ship-link');
+
+            // Load State
+            let testState = JSON.parse(localStorage.getItem('jobTrackerTestChecklist')) || {};
+
+            // Render
+            checklistItems.forEach(item => {
+                const isChecked = testState[item.id] || false;
+                const div = document.createElement('div');
+                div.className = 'checklist-item';
+                div.innerHTML = `
+                    <input type="checkbox" id="${item.id}" ${isChecked ? 'checked' : ''}>
+                    <div>
+                        <div class="checklist-label">${item.label}</div>
+                        ${item.tip ? `<span class="checklist-tooltip">${item.tip}</span>` : ''}
+                    </div>
+                `;
+                container.appendChild(div);
+
+                // Event Listener
+                const checkbox = div.querySelector('input');
+                div.addEventListener('click', (e) => {
+                    if (e.target !== checkbox) checkbox.click();
+                });
+                checkbox.addEventListener('change', () => {
+                    testState[item.id] = checkbox.checked;
+                    localStorage.setItem('jobTrackerTestChecklist', JSON.stringify(testState));
+                    updateSummary();
+                });
+            });
+
+            // Update Summary Logic
+            const updateSummary = () => {
+                const passed = Object.values(testState).filter(v => v).length;
+                countEl.innerText = passed;
+
+                if (passed === 10) {
+                    summaryEl.className = 'status-summary success';
+                    msgEl.innerText = 'Ready to Ship!';
+                    shipLink.style.opacity = '1';
+                    shipLink.style.pointerEvents = 'auto';
+                } else {
+                    summaryEl.className = 'status-summary warning';
+                    msgEl.innerText = 'Resolve all issues before shipping.';
+                    shipLink.style.opacity = '0.5';
+                    // We don't strictly disable pointer events here so user can click and see the lock page
+                    // But visual cue is important
+                }
+            };
+
+            // Reset Logic
+            document.getElementById('reset-tests-btn').addEventListener('click', () => {
+                if (confirm('Reset all test statuses?')) {
+                    testState = {};
+                    localStorage.setItem('jobTrackerTestChecklist', JSON.stringify(testState));
+                    document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+                    updateSummary();
+                }
+            });
+
+            // Initial Update
+            updateSummary();
+        });
+    </script>
+</body>
+
+</html>

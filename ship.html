@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ship - Job Notification Tracker</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .ship-container {
+            max-width: 600px;
+            margin: 80px auto;
+            text-align: center;
+            background: white;
+            padding: 48px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .locked-icon {
+            font-size: 3rem;
+            margin-bottom: 24px;
+            display: block;
+        }
+
+        .ship-btn {
+            background: #000;
+            color: #fff;
+            padding: 16px 32px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 24px;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+
+        .ship-btn:hover {
+            transform: scale(1.02);
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar"
+        style="padding: 16px 32px; background: white; border-bottom: 1px solid #eee; display: flex; align-items: center; justify-content: space-between;">
+        <div class="nav-brand" style="font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.2rem;">JOB
+            NOTIFICATION TRACKER</div>
+        <div style="display: flex; gap: 24px;">
+            <a href="dashboard.html" style="text-decoration: none; color: #666; font-weight: 500;">Dashboard</a>
+            <a href="test.html" style="text-decoration: none; color: #666; font-weight: 500;">Test</a>
+        </div>
+    </nav>
+
+    <!-- LOCKED VIEW -->
+    <div id="locked-view" class="ship-container">
+        <span class="locked-icon">🔒</span>
+        <h1 style="font-family: var(--font-serif); margin-bottom: 16px;">Shipment Locked</h1>
+        <p style="color: #666; line-height: 1.6;">You cannot access the shipping console until all pre-flight tests are
+            passed.</p>
+        <div style="margin-top: 24px; font-weight: 500; color: #c00;">
+            Tests Passed: <span id="lock-count">0</span> / 10
+        </div>
+        <a href="test.html" class="ship-btn" style="background: #333;">Go to Test Checklist</a>
+    </div>
+
+    <!-- UNLOCKED VIEW -->
+    <div id="unlocked-view" class="ship-container hidden">
+        <span class="locked-icon">🚀</span>
+        <h1 style="font-family: var(--font-serif); margin-bottom: 16px;">Ready for Takeoff</h1>
+        <p style="color: #666; line-height: 1.6;">All systems go. Your application is verified and ready for deployment.
+        </p>
+        <div style="margin-top: 32px; padding: 24px; background: #e6ffe6; border-radius: 8px; color: #006600;">
+            <strong>Deployment Status:</strong> GREEN
+        </div>
+        <button class="ship-btn" onclick="alert('Simulated Deployment Sequence Initiated!')">Deploy to
+            Production</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const checklist = JSON.parse(localStorage.getItem('jobTrackerTestChecklist')) || {};
+            const passedCount = Object.values(checklist).filter(v => v).length;
+
+            const lockedView = document.getElementById('locked-view');
+            const unlockedView = document.getElementById('unlocked-view');
+            const lockCount = document.getElementById('lock-count');
+
+            if (passedCount >= 10) {
+                lockedView.classList.add('hidden');
+                unlockedView.classList.remove('hidden');
+            } else {
+                lockedView.classList.remove('hidden');
+                unlockedView.classList.add('hidden');
+                lockCount.innerText = passedCount;
+            }
+        });
+    </script>
+</body>
+
+</html>

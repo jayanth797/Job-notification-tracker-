@@ -609,3 +609,117 @@ input:checked+.slider:before {
 .email-row:hover {
   background-color: #fcfcfc;
 }
+
+/* --- STATUS & TOAST STYLES --- */
+
+/* Status Badges */
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: #f0f0f0;
+  color: #666;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-block;
+}
+
+.status-badge:hover {
+  background: #e0e0e0;
+}
+
+.status-badge.applied {
+  background: #e0f0ff;
+  color: #0077b5;
+  border-color: #b3d7ff;
+}
+
+.status-badge.rejected {
+  background: #ffe0e0;
+  color: #c00;
+  border-color: #ffb3b3;
+}
+
+.status-badge.selected {
+  background: #e6ffe6;
+  color: #006600;
+  border-color: #b3ffb3;
+}
+
+/* Status Controls Group */
+.status-controls {
+  display: flex;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.status-btn {
+  background: white;
+  border: 1px solid #ddd;
+  padding: 4px 8px;
+  font-size: 0.7rem;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #666;
+  transition: all 0.2s;
+}
+
+.status-btn:hover {
+  border-color: #999;
+  color: #333;
+}
+
+.status-btn.active {
+  background: #333;
+  color: white;
+  border-color: #333;
+}
+
+.status-btn.active[data-status="Applied"] {
+  background: #0077b5;
+  border-color: #0077b5;
+}
+
+.status-btn.active[data-status="Rejected"] {
+  background: #c00;
+  border-color: #c00;
+}
+
+.status-btn.active[data-status="Selected"] {
+  background: #006600;
+  border-color: #006600;
+}
+
+/* Toast Notification */
+#status-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: #333;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  z-index: 2000;
+}
+
+#status-toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+#status-toast .icon {
+  font-size: 1.2rem;
+}
