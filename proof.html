@@ -5,56 +5,304 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Proof of Work - Job Notification Tracker</title>
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap"
         rel="stylesheet">
-    <!-- Styles -->
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .proof-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .step-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f9f9f9;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+
+        .step-item.completed {
+            background: #e6ffe6;
+            border-color: #b3ffb3;
+            color: #006600;
+        }
+
+        .step-status {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: inherit;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            background: #eee;
+            color: #666;
+        }
+
+        .status-badge.shipped {
+            background: #e6ffe6;
+            color: #006600;
+        }
+
+        .completion-msg {
+            text-align: center;
+            margin-top: 24px;
+            color: #006600;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .completion-msg.visible {
+            opacity: 1;
+        }
+    </style>
 </head>
 
 <body>
-    <!-- Top Bar -->
-    <nav class="top-bar">
-        <div class="brand-name">Job Notification Tracker</div>
-
-        <button class="mobile-menu-btn" aria-label="Toggle menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-
-        <ul class="nav-links">
-            <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
-            <li><a href="saved.html" class="nav-link">Saved</a></li>
-            <li><a href="digest.html" class="nav-link">Digest</a></li>
-            <li><a href="settings.html" class="nav-link">Settings</a></li>
-            <li><a href="proof.html" class="nav-link active">Proof</a></li>
-            <li><a href="test.html" class="nav-link">Test</a></li>
-            <li><a href="ship.html" class="nav-link" style="color: #666;">Ship</a></li>
-        </ul>
+    <nav class="navbar">
+        <div class="nav-brand">JOB NOTIFICATION TRACKER</div>
+        <div class="nav-links">
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="saved.html" class="nav-link">Saved</a>
+            <a href="digest.html" class="nav-link">Digest</a>
+            <a href="settings.html" class="nav-link">Settings</a>
+            <a href="proof.html" class="nav-link active">Proof</a>
+            <a href="test.html" class="nav-link">Test</a>
+            <a href="ship.html" class="nav-link" style="color: #666;">Ship</a>
+        </div>
     </nav>
 
-    <!-- Context Header -->
-    <header class="context-header">
-        <h1 class="context-headline">Proof of Work</h1>
-    </header>
-
-    <!-- Main Layout -->
-    <main class="main-layout">
-        <section class="primary-workspace"
-            style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; text-align: center;">
-            <div style="padding: 48px; max-width: 600px; width: 100%;">
-                <h2 style="font-family: var(--font-serif); font-size: 1.5rem; margin-bottom: 16px; color: #888;">
-                    Artifact Collection</h2>
-                <p style="color: #666;">Screenshots and validation logs will be collected here.</p>
+    <div class="container">
+        <div class="proof-container">
+            <div
+                style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 32px; border-bottom: 1px solid #eee; padding-bottom: 24px;">
+                <div>
+                    <h1 style="font-family: var(--font-serif); margin: 0;">Project 1 Submission</h1>
+                    <p style="margin: 8px 0 0; color: #666;">Job Notification Tracker</p>
+                </div>
+                <div id="project-status" class="status-badge">Not Started</div>
             </div>
-        </section>
-    </main>
 
-    <script src="script.js"></script>
+            <!-- Step A: Completion Summary -->
+            <h3 style="margin-bottom: 16px;">Step Completion Summary</h3>
+            <div class="step-list">
+                <div class="step-item completed">
+                    <span>1. Setup & Config</span>
+                    <span class="step-status">Completed</span>
+                </div>
+                <div class="step-item completed">
+                    <span>2. Dashboard UI</span>
+                    <span class="step-status">Completed</span>
+                </div>
+                <div class="step-item completed">
+                    <span>3. Match Score Logic</span>
+                    <span class="step-status">Completed</span>
+                </div>
+                <div class="step-item completed">
+                    <span>4. Settings & Styles</span>
+                    <span class="step-status">Completed</span>
+                </div>
+                <div class="step-item completed">
+                    <span>5. Daily Digest</span>
+                    <span class="step-status">Completed</span>
+                </div>
+                <div class="step-item completed">
+                    <span>6. Status Tracking</span>
+                    <span class="step-status">Completed</span>
+                </div>
+                <div class="step-item" id="step-tests">
+                    <span>7. Test Checklist</span>
+                    <span class="step-status" id="test-status-text">Pending</span>
+                </div>
+                <div class="step-item" id="step-links">
+                    <span>8. Artifact Submission</span>
+                    <span class="step-status" id="link-status-text">Pending</span>
+                </div>
+            </div>
+
+            <!-- Step B: Artifact Collection -->
+            <h3 style="margin-bottom: 16px;">Artifact Collection</h3>
+            <div class="input-group">
+                <label>Lovable Project Link</label>
+                <input type="url" id="link-lovable" placeholder="https://lovable.dev/..." required>
+            </div>
+            <div class="input-group">
+                <label>GitHub Repository Link</label>
+                <input type="url" id="link-github" placeholder="https://github.com/..." required>
+            </div>
+            <div class="input-group">
+                <label>Deployed URL</label>
+                <input type="url" id="link-deploy" placeholder="https://vercel.app/..." required>
+            </div>
+
+            <!-- Copy Button -->
+            <div style="margin-top: 32px;">
+                <button id="copy-submission-btn" class="btn btn-primary" style="width: 100%;" disabled>Copy Final
+                    Submission</button>
+            </div>
+
+            <div id="completion-msg" class="completion-msg">Project 1 Shipped Successfully.</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // DOM Elements
+            const linkLovable = document.getElementById('link-lovable');
+            const linkGithub = document.getElementById('link-github');
+            const linkDeploy = document.getElementById('link-deploy');
+            const copyBtn = document.getElementById('copy-submission-btn');
+            const projectStatus = document.getElementById('project-status');
+            const completionMsg = document.getElementById('completion-msg');
+
+            const stepTests = document.getElementById('step-tests');
+            const stepLinks = document.getElementById('step-links');
+            const testStatusText = document.getElementById('test-status-text');
+            const linkStatusText = document.getElementById('link-status-text');
+
+            // Load Saved Data
+            const savedLinks = JSON.parse(localStorage.getItem('jobTrackerProofLinks')) || {};
+            if (savedLinks.lovable) linkLovable.value = savedLinks.lovable;
+            if (savedLinks.github) linkGithub.value = savedLinks.github;
+            if (savedLinks.deploy) linkDeploy.value = savedLinks.deploy;
+
+            // Validation Logic
+            const validateUrl = (str) => {
+                try { new URL(str); return true; } catch { return false; }
+            };
+
+            const checkAllConditions = () => {
+                // 1. Check Links
+                const l1 = linkLovable.value.trim();
+                const l2 = linkGithub.value.trim();
+                const l3 = linkDeploy.value.trim();
+                const linksValid = validateUrl(l1) && validateUrl(l2) && validateUrl(l3);
+
+                // Update Link Step UI
+                if (linksValid) {
+                    stepLinks.classList.add('completed');
+                    linkStatusText.innerText = 'Completed';
+                } else {
+                    stepLinks.classList.remove('completed');
+                    linkStatusText.innerText = 'Pending';
+                }
+
+                // 2. Check Tests
+                const tests = JSON.parse(localStorage.getItem('jobTrackerTestChecklist')) || {};
+                const testsPassedCount = Object.values(tests).filter(v => v).length;
+                const testsAllPassed = testsPassedCount === 10;
+
+                // Update Test Step UI
+                if (testsAllPassed) {
+                    stepTests.classList.add('completed');
+                    testStatusText.innerText = 'Completed';
+                } else {
+                    stepTests.classList.remove('completed');
+                    testStatusText.innerText = 'Pending';
+                }
+
+                // Determine Project Status
+                const isShipped = linksValid && testsAllPassed;
+
+                if (isShipped) {
+                    projectStatus.innerText = 'Shipped';
+                    projectStatus.className = 'status-badge shipped';
+                    completionMsg.classList.add('visible');
+                    copyBtn.disabled = false;
+                } else {
+                    const inProgress = l1 || l2 || l3 || testsPassedCount > 0;
+                    projectStatus.innerText = inProgress ? 'In Progress' : 'Not Started';
+                    projectStatus.className = 'status-badge';
+                    completionMsg.classList.remove('visible');
+                    copyBtn.disabled = true;
+                }
+
+                // Persist Links
+                localStorage.setItem('jobTrackerProofLinks', JSON.stringify({
+                    lovable: l1,
+                    github: l2,
+                    deploy: l3
+                }));
+            };
+
+            // Event Listeners
+            [linkLovable, linkGithub, linkDeploy].forEach(input => {
+                input.addEventListener('input', checkAllConditions);
+            });
+
+            // Copy Logic
+            copyBtn.addEventListener('click', () => {
+                const text = `
+------------------------------------------
+Job Notification Tracker — Final Submission
+
+Lovable Project:
+${linkLovable.value}
+
+GitHub Repository:
+${linkGithub.value}
+
+Live Deployment:
+${linkDeploy.value}
+
+Core Features:
+- Intelligent match scoring
+- Daily digest simulation
+- Status tracking
+- Test checklist enforced
+------------------------------------------
+                 `.trim();
+
+                navigator.clipboard.writeText(text).then(() => {
+                    const originText = copyBtn.innerText;
+                    copyBtn.innerText = "Copied to Clipboard!";
+                    setTimeout(() => copyBtn.innerText = originText, 2000);
+                });
+            });
+
+            // Initial Check
+            checkAllConditions();
+        });
+    </script>
 </body>
 
 </html>
