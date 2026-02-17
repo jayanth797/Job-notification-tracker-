@@ -49,8 +49,9 @@
             <div style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <span id="next-delivery">Next delivery: <strong>Tomorrow, 9:00 AM</strong></span>
+                    <div style="font-size: 0.75rem; color: #888; margin-top: 4px;">Demo Mode: Daily 9AM trigger simulated manually.</div>
                 </div>
-                <button id="simulate-digest-btn" class="btn btn-primary">Simulate 9AM Delivery</button>
+                <button id="simulate-digest-btn" class="btn btn-primary">Generate Today's 9AM Digest (Simulated)</button>
             </div>
 
             <!-- Email Simulation Container -->
@@ -61,7 +62,7 @@
 
                     <!-- Email Header -->
                     <div style="background: var(--color-accent); color: white; padding: 24px; text-align: center;">
-                        <h2 style="margin: 0; font-size: 1.5rem; color: white;">Your Top Job Picks</h2>
+                        <h2 style="margin: 0; font-size: 1.5rem; color: white;">Top 10 Jobs For You — 9AM Digest</h2>
                         <p style="margin: 8px 0 0; opacity: 0.9; font-size: 0.9rem;">Fresh matches for <span
                                 id="digest-date">Today</span></p>
                     </div>
@@ -75,10 +76,15 @@
                     <!-- Email Footer -->
                     <div
                         style="background: #f9f9f9; padding: 16px; text-align: center; font-size: 0.8rem; color: #888; border-top: 1px solid #eee;">
-                        <p style="margin: 0;">You received this email because you subscribed to Job Notification
-                            Tracker.</p>
-                        <a href="#" style="color: #666; text-decoration: underline;">Update Preferences</a>
+                        <p style="margin: 0;">This digest was generated based on your preferences.</p>
+                        <a href="settings.html" style="color: #666; text-decoration: underline;">Update Preferences</a>
                     </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div style="margin-top: 24px; display: flex; gap: 12px; justify-content: center;">
+                    <button id="copy-digest-btn" class="btn btn-secondary">Copy Digest to Clipboard</button>
+                    <button id="email-draft-btn" class="btn btn-secondary">Create Email Draft</button>
                 </div>
             </div>
 
